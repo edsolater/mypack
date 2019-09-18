@@ -1,0 +1,23 @@
+{
+  "name": "mypack",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/edsolater/mypack.git"
+  },
+  "author": "edsolater <edsolater@qq.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/edsolater/mypack/issues"
+  },
+  "homepage": "https://github.com/edsolater/mypack#readme",
+  "dependencies": {
+    "macha": "0.0.0",
+    "mocha": "^6.2.0"
+  }
+}
