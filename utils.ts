@@ -35,14 +35,12 @@ function invoke<T>(fn: (...args: any[]) => T, ...args: any[]) {
  *      yield ['♦',p]
  *    }]
  */
-function* generate(count: number, mapFunc?: Function) {
+function* generate(count: number, mapFunc: typeof selfOutCome = selfOutCome) {
   for (let i = 0; i < count; i++) {
     if (mapFunc.constructor.name === 'GenertorFunction') {
       yield* (mapFunc as GeneratorFunction)(i, count);
-    } else if (mapFunc) {
-      yield mapFunc(i, count);
     } else {
-      yield i;
+      yield mapFunc(i, count);
     }
   }
 }
