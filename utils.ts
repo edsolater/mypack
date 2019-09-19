@@ -1,3 +1,4 @@
+import { selfOutCome } from './lowerBaseFunctions';
 /**
  * 工具函数——生成函数
  * 返回随机生成的颜色字符串
@@ -20,6 +21,7 @@ function invoke<T>(fn: (...args: any[]) => T, ...args: any[]) {
   if (typeof fn !== 'function') throw Error(`can't invoke ${fn}`);
   return fn(...args);
 }
+
 /**
  * 生成函数
  * @param count 生成的Iterator的可迭代数
@@ -33,12 +35,14 @@ function invoke<T>(fn: (...args: any[]) => T, ...args: any[]) {
  *      yield ['♦',p]
  *    }]
  */
-function* generate(count, mapFunc = i => i) {
+function* generate(count: number, mapFunc?: Function) {
   for (let i = 0; i < count; i++) {
     if (mapFunc.constructor.name === 'GenertorFunction') {
-      yield* mapFunc(i, count);
-    } else {
+      yield* (mapFunc as GeneratorFunction)(i, count);
+    } else if (mapFunc) {
       yield mapFunc(i, count);
+    } else {
+      yield i;
     }
   }
 }
