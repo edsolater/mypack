@@ -5,7 +5,7 @@
  * @param rest 除了第一个的函数参数
  * @returns 直接返回第一参数
  */
-export function outFirstParam<T>(i: T, ...rest: any) {
+export function baseFunc<T>(i: T, ...rest: any) {
   return i;
 }
 

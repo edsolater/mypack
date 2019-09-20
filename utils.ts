@@ -1,4 +1,4 @@
-import { selfOutCome } from './lowerBaseFunctions';
+import { baseFunc } from './lowerBaseFunctions';
 /**
  * 工具函数——生成函数
  * 返回随机生成的颜色字符串
@@ -35,7 +35,7 @@ function invoke<T>(fn: (...args: any[]) => T, ...args: any[]) {
  *      yield ['♦',p]
  *    }]
  */
-function* generate(count: number, mapFunc: typeof selfOutCome = selfOutCome) {
+function* generate(count: number, mapFunc = baseFunc) {
   for (let i = 0; i < count; i++) {
     if (mapFunc.constructor.name === 'GenertorFunction') {
       yield* (mapFunc as GeneratorFunction)(i, count);
