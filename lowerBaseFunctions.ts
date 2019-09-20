@@ -1,3 +1,3 @@
-export function selfOutCome<T>(i: T, ...rest: any) {
+export function doNothing<T>(i: T, ...rest: any) {
   return i;
 }
