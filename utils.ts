@@ -1,26 +1,4 @@
-import { selfOutCome } from './lowerBaseFunctions';
-/**
- * 工具函数——生成函数
- * 返回随机生成的颜色字符串
- * @example
- * makeRandomColor() // #123456
- * makeRandomColor() // #EEFFEE
- */
-function makeRandomColor() {
-  const letters = '0123456789ABCDEF';
-  return `#${Array.from({ length: 6 }, () => letters[Math.floor(Math.random() * 16)])}`;
-}
-
-/**
- *
- * 简单的触发函数行为，给行为函数名增加业务代码的可读性
- * @param fn 需触发的函数
- * @param args 参数们
- */
-function invoke<T>(fn: (...args: any[]) => T, ...args: any[]) {
-  if (typeof fn !== 'function') throw Error(`can't invoke ${fn}`);
-  return fn(...args);
-}
+import { MapFunc } from './lowerBaseFunctions'
 
 /**
  * 生成函数
@@ -35,12 +13,13 @@ function invoke<T>(fn: (...args: any[]) => T, ...args: any[]) {
  *      yield ['♦',p]
  *    }]
  */
-function* generate(count: number, mapFunc: typeof selfOutCome = selfOutCome) {
+export function* generate<T>(count: number, mapFunc: MapFunc = (i: T) => i) {
+  //TODO: 写个MapFunc的类型要能自动返回没给定的参数的返回值
   for (let i = 0; i < count; i++) {
     if (mapFunc.constructor.name === 'GenertorFunction') {
-      yield* (mapFunc as GeneratorFunction)(i, count);
+      yield* (mapFunc as GeneratorFunction)(i, count)
     } else {
-      yield mapFunc(i, count);
+      yield mapFunc(i, count)
     }
   }
 }

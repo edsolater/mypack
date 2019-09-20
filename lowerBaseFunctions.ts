@@ -1,5 +1,5 @@
 export function doNothing<T>(i: T, ...rest: any) {
-  return i;
+  return i
 }
 
 /**
@@ -8,7 +8,14 @@ export function doNothing<T>(i: T, ...rest: any) {
  * @param fn 需触发的函数
  * @param args 参数们
  */
-function invoke<T>(fn: (...args: any[]) => T, ...args: any[]) {
-  if (typeof fn !== 'function') return fn;
-  return fn(...args);
+export function invoke<T>(fn: (...args: any[]) => T, ...args: any[]) {
+  if (typeof fn !== 'function') return fn
+  return fn(...args)
+}
+
+export interface CallbackFunc {
+  (...any): void
+}
+export interface MapFunc<T> {
+  (...any): T
 }
