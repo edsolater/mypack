@@ -23,3 +23,7 @@ export function* generate<T>(count: number, mapFunc: MapFunc = (i: T) => i) {
     }
   }
 }
+
+export function range(count: number, mapFunc?: MapFunc) {
+  return [...generate(count, mapFunc)]
+}
