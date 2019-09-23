@@ -1,4 +1,4 @@
-import { baseFunc } from './lowerBaseFunctions';
+import { MapFunc } from './lowerBaseFunctions'
 
 /**
  * 生成函数
@@ -13,12 +13,17 @@ import { baseFunc } from './lowerBaseFunctions';
  *      yield ['♦',p]
  *    }]
  */
-function* generate(count: number, mapFunc = baseFunc) {
+export function* generate<T>(count: number, mapFunc: MapFunc = (i: T) => i) {
+  //TODO: 写个MapFunc的类型要能自动返回没给定的参数的返回值
   for (let i = 0; i < count; i++) {
     if (mapFunc.constructor.name === 'GenertorFunction') {
-      yield* (mapFunc as GeneratorFunction)(i, count);
+      yield* (mapFunc as GeneratorFunction)(i, count)
     } else {
-      yield mapFunc(i, count);
+      yield mapFunc(i, count)
     }
   }
+}
+
+export function range(count: number, mapFunc?: MapFunc) {
+  return [...generate(count, mapFunc)]
 }
