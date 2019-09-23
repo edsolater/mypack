@@ -1,4 +1,3 @@
-
 /**
  * 用于在编写函数时充当原封不动的函数
  * @param i 第一个函数参数
@@ -6,7 +5,7 @@
  * @returns 直接返回第一参数
  */
 export function baseFunc<T>(i: T, ...rest: any) {
-  return i;
+  return i
 }
 
 /**
@@ -23,6 +22,6 @@ export function invoke<T>(fn: (...args: any[]) => T, ...args: any[]) {
 export interface CallbackFunc {
   (...any): void
 }
-export interface MapFunc<T> {
-  (...any): T
+export interface MapFunc {
+  <T>(...any): T
 }

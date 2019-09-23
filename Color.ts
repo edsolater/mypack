@@ -2,11 +2,14 @@
  * 仿照sass/less的颜色函数，以丰富JavaScript的底层库。
  */
 
+type colorValue = string | number | [number, number, number, number?]
+type colorMode = 'RGB' | 'HSL' | 'HEX' | 'RGBA' | 'HSLA' | 'HEXA' 
 export default class Color {
+  mode:colorMode
   r: number
   g: number
   b: number
-  alpha: number
+  a: number
   /**
    * 工具函数——生成函数
    * 返回随机生成的颜色字符串
@@ -19,24 +22,47 @@ export default class Color {
     return `#${Array.from({ length: 6 }, () => letters[Math.floor(Math.random() * 16)])}`
   }
   constructor(value) {
-    switch (this.classify(value)) {
-      case 'HSL': {
-        const rgb = this.fromHSL(value)
-        this.r = rgb[0]
-        this.g = rgb[1]
-        this.b = rgb[2]
-        break
-      }
-      case 'Number': {
+    value = this.formatColorValue(value)
+    const mode = this.getColorMode(value)
+    this.mode = mode
+    const { r, g, b, a } = this.parseColorValue(value, mode)
+    this.r = r
+    this.g = g
+    this.b = b
+    this.a = a
+  }
+  formatColorValue(value: colorValue): colorValue {}
+  getColorMode(value: colorValue):colorMode {
+    if (typeof value === 'string') {
+      if (value.match(/^#([0-9a-fA-f]{3}|[0-9a-fA-f]{6})$/)) {
+        return 'HEX'
+      } else if (value.match(/^(?:rgb|rgba)\(\d+, ?\d+, ?\d(?:, ?\d+)?\)$/)) {
+        return 'RGB'
       }
     }
   }
-  classify(value: any) {
-    return ''
+  parseColorValue(value: colorValue, mode: colorMode) {
+    switch (mode) {
+      case 'HSL': {
+        // 分析 HSL 格式的色值
+      }
+      case 'RGB': {
+        // 分析 RGB 格式的色值
+      }
+      case 'HEX': {
+        // 分析 HEX 格式的色值
+      }
+    }
+    return {
+      r: 225,
+      g: 225,
+      b: 225,
+      a: 0.6
+    }
   }
   fromHSL(value: string) {}
   fromRGB(value: string) {}
-  fromHSV(value: string) {}
+  fromHEX(value: string) {}
 
   toRGB(hexadecimal: string) {
     if (hexadecimal.match(/#[0-9a-fA-F]{6}/)) {
