@@ -19,7 +19,7 @@ export function invoke<T>(fn: (...args: any[]) => T, ...args: any[]) {
   return fn(...args)
 }
 
-export interface CallbackFunc {
+export interface CallbackFunc { 
   (...any): void
 }
 export interface MapFunc {

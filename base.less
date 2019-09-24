@@ -11,12 +11,16 @@
   }
 }
 
-// 专属于 <input> 使其不影响布局、不在屏幕上显示，但JS/CSS能使用此input的丰富状态
-.ghost-input() {
+// 多用于 <input> 使其不影响布局、不在屏幕上显示，但JS/CSS能使用此input的丰富状态
+.ghost-node() {
   positon: absolute;
   opacity: 0;
 }
 
 button {
   box-sizing: border-box;
+}
+
+.absolute-box {
+  position: absolute;
 }

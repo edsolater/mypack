@@ -1,0 +1,6 @@
+button {
+  box-sizing: border-box;
+}
+.absolute-box {
+  position: absolute;
+}

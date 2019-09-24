@@ -1,6 +1,8 @@
 {
   "compilerOptions": {
     "target": "es2019",
-    "jsx": "react"
+    "jsx": "react",
+    "outDir": "./dist",
+    "allowSyntheticDefaultImports": true
   }
 }

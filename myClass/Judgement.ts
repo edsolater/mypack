@@ -1,3 +1,4 @@
+import * as React from 'react'
 export default class If {
   static all(...expressions) {
     for (let i = 0; i < expressions.length; i++) {
@@ -13,5 +14,8 @@ export default class If {
   has(target, proprty) {
     if (proprty in target) return true
     return false
+  }
+  randerIf(componentObj:JSX.Element, expression){
+    return expression && componentObj
   }
 }
