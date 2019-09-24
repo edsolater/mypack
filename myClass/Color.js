@@ -1,11 +1,12 @@
 class Color {
   constructor(value) {
     value = this.formatColorValue(value); //规整传来的字符串
-    // const { r, g, b, a } = this.parseColorValue(value) || {};
-    this.r = 12;
-    this.g = 12;
-    this.b = 12;
-    this.a = 0.3;
+    console.log(this.parseColorValue(value));
+    const { r, g, b, a } = this.parseColorValue(value) || {};
+    this.r = r;
+    this.g = g;
+    this.b = b;
+    this.a = a;
   }
   /**
    * 工具函数——生成函数
@@ -32,7 +33,9 @@ class Color {
   fromHEX(value) {
     if (typeof value === 'string') {
       let matchStr;
-      if ((matchStr = value.match(/^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/))) {
+      if (
+        (matchStr = value.match(/^#([0-9a-fA-F]{3}|[0-9a-fA-F]{4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$/))
+      ) {
         const rgbStr = matchStr[1];
         if (rgbStr.length === 6) {
           // 例如: value = "#000fff"
@@ -49,18 +52,33 @@ class Color {
             g: parseInt(dulp(rgbStr.slice(1, 2)), 16),
             b: parseInt(dulp(rgbStr.slice(2, 3)), 16)
           };
+        } else if (rgbStr.length === 8) {
+          // 例如: value = "#000fffcc"
+          return {
+            r: parseInt(rgbStr.slice(0, 2), 16),
+            g: parseInt(rgbStr.slice(2, 4), 16),
+            b: parseInt(rgbStr.slice(4, 6), 16),
+            a: parseInt(rgbStr.slice(6, 8), 16) / 265
+          };
+        } else if (rgbStr.length === 4) {
+          console.log(rgbStr);
+          // 例如: value = "#3ef4"
+          const dulp = n => n + n;
+          return {
+            r: parseInt(dulp(rgbStr.slice(0, 1)), 16),
+            g: parseInt(dulp(rgbStr.slice(1, 2)), 16),
+            b: parseInt(dulp(rgbStr.slice(2, 3)), 16),
+            a: parseInt(dulp(rgbStr.slice(3, 4)), 16) / 265
+          };
         }
       }
     }
     return undefined;
   }
-  toRGB(hexadecimal) {
-    if (hexadecimal.match(/#[0-9a-fA-F]{6}/)) {
-      const r = parseInt(hexadecimal[1] + hexadecimal[2], 16);
-      const g = parseInt(hexadecimal[3] + hexadecimal[4], 16);
-      const b = parseInt(hexadecimal[5] + hexadecimal[6], 16);
-      return `rgb(${r},${g},${b})`;
-    }
+  toRGB() {
+    return `rgb${this.a < 1 ? 'a' : ''}(${this.r},${this.g},${this.b}${
+      this.a < 1 ? `,${this.a.toFixed(3)}` : ''
+    })`;
   }
   // 有明确目的的工具函数没必要自己写，找第三方js库就行了
   toHSL(params) {
@@ -78,7 +96,7 @@ class Color {
     return `#${toTwoHex(this.r)}${toTwoHex(this.g)}${toTwoHex(this.b)}`;
   }
   [Symbol.toPrimitive]() {
-    return this.toHEX();
+    return this.toRGB();
   }
 }
 //#region 别人写颜色转换函数们
@@ -210,6 +228,5 @@ function rgbToHsl(r, g, b) {
 }
 //#endregion
 
-const c = new Color('#333');
-console.log(3);
+const c = new Color('#fff4');
 console.log(`${c}`);

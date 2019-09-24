@@ -44,8 +44,10 @@ export default class Color {
   fromHEX(value: colorValue) {
     if (typeof value === 'string') {
       let matchStr;
-      if ((matchStr = value.match(/^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/))) {
-        const rgbStr = matchStr[1]
+      if (
+        (matchStr = value.match(/^#([0-9a-fA-F]{3}|[0-9a-fA-F]{4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$/))
+      ) {
+        const rgbStr = matchStr[1];
         if (rgbStr.length === 6) {
           // 例如: value = "#000fff"
           return {
@@ -61,19 +63,33 @@ export default class Color {
             g: parseInt(dulp(rgbStr.slice(1, 2)), 16),
             b: parseInt(dulp(rgbStr.slice(2, 3)), 16)
           };
+        } else if (rgbStr.length === 8) {
+          // 例如: value = "#000fffcc"
+          return {
+            r: parseInt(rgbStr.slice(0, 2), 16),
+            g: parseInt(rgbStr.slice(2, 4), 16),
+            b: parseInt(rgbStr.slice(4, 6), 16),
+            a: parseInt(rgbStr.slice(6, 8), 16) / 265
+          };
+        } else if (rgbStr.length === 4) {
+          // 例如: value = "#3ef4"
+          const dulp = n => n + n;
+          return {
+            r: parseInt(dulp(rgbStr.slice(0, 1)), 16),
+            g: parseInt(dulp(rgbStr.slice(1, 2)), 16),
+            b: parseInt(dulp(rgbStr.slice(2, 3)), 16),
+            a: parseInt(dulp(rgbStr.slice(3, 4)), 16) / 265
+          };
         }
       }
     }
-    return undefined
+    return undefined;
   }
 
-  toRGB(hexadecimal: string) {
-    if (hexadecimal.match(/#[0-9a-fA-F]{6}/)) {
-      const r = parseInt(hexadecimal[1] + hexadecimal[2], 16);
-      const g = parseInt(hexadecimal[3] + hexadecimal[4], 16);
-      const b = parseInt(hexadecimal[5] + hexadecimal[6], 16);
-      return `rgb(${r},${g},${b})`;
-    }
+  toRGB() {
+    return `rgb${this.a < 1 ? 'a' : ''}(${this.r},${this.g},${this.b}${
+      this.a < 1 ? `,${this.a.toFixed(3)}` : ''
+    })`;
   }
 
   // 有明确目的的工具函数没必要自己写，找第三方js库就行了
@@ -92,7 +108,7 @@ export default class Color {
     return `#${toTwoHex(this.r)}${toTwoHex(this.g)}${toTwoHex(this.b)}`;
   }
   [Symbol.toPrimitive]() {
-    return this.toHEX();
+    return this.toRGB();
   }
 }
 
