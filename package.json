@@ -17,8 +17,10 @@
   },
   "homepage": "https://github.com/edsolater/mypack#readme",
   "dependencies": {
+    "@types/react": "^16.9.2",
     "color": "^3.1.2",
     "macha": "0.0.0",
-    "mocha": "^6.2.0"
+    "mocha": "^6.2.0",
+    "react": "^16.9.0"
   }
 }
