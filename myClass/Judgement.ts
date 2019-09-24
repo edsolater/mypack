@@ -18,4 +18,7 @@ export default class If {
   randerIf(componentObj:JSX.Element, expression){
     return expression && componentObj
   }
+  is(target, type: string) {
+    return typeof target === type
+  }
 }

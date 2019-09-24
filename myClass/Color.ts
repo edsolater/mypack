@@ -45,17 +45,26 @@ export default class Color {
     if (typeof value === 'string') {
       let matchStr;
       if ((matchStr = value.match(/^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/))) {
-        console.log('matchStr: ', matchStr)
-        if (matchStr[1].length === 7) {
+        const rgbStr = matchStr[1]
+        if (rgbStr.length === 6) {
           // 例如: value = "#000fff"
           return {
-            r: parseInt(value.slice(1, 3), 16),
-            g: parseInt(value.slice(3, 5), 16),
-            b: parseInt(value.slice(5), 16)
+            r: parseInt(rgbStr.slice(0, 2), 16),
+            g: parseInt(rgbStr.slice(2, 4), 16),
+            b: parseInt(rgbStr.slice(4, 6), 16)
+          };
+        } else if (rgbStr.length === 3) {
+          // 例如: value = "#3ef"
+          const dulp = n => n + n;
+          return {
+            r: parseInt(dulp(rgbStr.slice(0, 1)), 16),
+            g: parseInt(dulp(rgbStr.slice(1, 2)), 16),
+            b: parseInt(dulp(rgbStr.slice(2, 3)), 16)
           };
         }
       }
     }
+    return undefined
   }
 
   toRGB(hexadecimal: string) {
@@ -72,18 +81,22 @@ export default class Color {
     if (params.match(/#[0-9a-fA-F]{6}/)) {
     }
   }
-  toHEX(rgb: [number, number, number]) {
-    const [r, g, b] = rgb;
-    return `#${r.toString(16)}${g.toString(16)}${b.toString(16)}`;
+  toHEX() {
+    function toTwoHex(num = 0) {
+      const hex = num.toString(16);
+      if (hex.length === 1) {
+        return '0' + hex;
+      }
+      return hex;
+    }
+    return `#${toTwoHex(this.r)}${toTwoHex(this.g)}${toTwoHex(this.b)}`;
   }
-
   [Symbol.toPrimitive]() {
-    return this.toHEX([this.r, this.g, this.b]);
+    return this.toHEX();
   }
 }
 
 //#region 别人写颜色转换函数们
-
 function colorHex(colorValue) {
   //十六进制颜色值的正则表达式
   var reg = /^#([0-9a-fA-f]{3}|[0-9a-fA-f]{6})$/;
