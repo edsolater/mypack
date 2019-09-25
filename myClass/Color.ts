@@ -3,7 +3,7 @@
  * 返回一个色块对象
  */
 type colorValue = string | number | [number, number, number, number?];
-type colorMode = 'RGB' | 'HSL' | 'HEX' | 'RGBA' | 'HSLA' | 'HEXA';
+type colorMode = "RGB" | "HSL" | "HEX" | "RGBA" | "HSLA" | "HEXA";
 
 const namedColor_hsl = {
   // 灰色系
@@ -160,13 +160,16 @@ const namedColor_hsl = {
   orchid: [302, 59, 65], // 兰花色
   mediumvioletred: [322, 81, 43], // 间紫罗兰红
   deeppink: [328, 100, 54] // 深粉红
-} as const
+} as const;
 
 export default class Color {
   mode: colorMode;
   r: number;
   g: number;
   b: number;
+  h: number; //代表HSL模型中的H
+  s: number;
+  l: number;
   a: number;
   /**
    * 工具函数——生成函数
@@ -176,8 +179,11 @@ export default class Color {
    * makeRandomColor() // #EEFFEE
    */
   static createRandomColor() {
-    const letters = '0123456789ABCDEF';
-    return `#${Array.from({ length: 6 }, () => letters[Math.floor(Math.random() * 16)])}`;
+    const letters = "0123456789ABCDEF";
+    return `#${Array.from(
+      { length: 6 },
+      () => letters[Math.floor(Math.random() * 16)]
+    )}`;
   }
   constructor(value: colorValue) {
     value = this.formatColorValue(value); //规整传来的字符串
@@ -188,85 +194,118 @@ export default class Color {
     this.a = a;
   }
   formatColorValue(value: colorValue): colorValue {
-    //TOFIX 暂时什么都不做
+    //TOFIX 目前什么都不做，开发占位
     return value;
   }
   parseColorValue(value: colorValue) {
-    return this.fromHEX(value) || this.fromRGB(value);
-  }
-  fromHSL(value: colorValue) {}
-  fromRGB(value: colorValue) {
-    return null;
-  }
-  fromHEX(value: colorValue) {
-    if (typeof value === 'string') {
-      let matchStr;
-      if (
-        (matchStr = value.match(/^#([0-9a-fA-F]{3}|[0-9a-fA-F]{4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$/))
-      ) {
-        const rgbStr = matchStr[1];
-        if (rgbStr.length === 6) {
-          // 例如: value = "#000fff"
-          return {
-            r: parseInt(rgbStr.slice(0, 2), 16),
-            g: parseInt(rgbStr.slice(2, 4), 16),
-            b: parseInt(rgbStr.slice(4, 6), 16)
-          };
-        } else if (rgbStr.length === 3) {
-          // 例如: value = "#3ef"
-          const dulp = n => n + n;
-          return {
-            r: parseInt(dulp(rgbStr.slice(0, 1)), 16),
-            g: parseInt(dulp(rgbStr.slice(1, 2)), 16),
-            b: parseInt(dulp(rgbStr.slice(2, 3)), 16)
-          };
-        } else if (rgbStr.length === 8) {
-          // 例如: value = "#000fffcc"
-          return {
-            r: parseInt(rgbStr.slice(0, 2), 16),
-            g: parseInt(rgbStr.slice(2, 4), 16),
-            b: parseInt(rgbStr.slice(4, 6), 16),
-            a: parseInt(rgbStr.slice(6, 8), 16) / 265
-          };
-        } else if (rgbStr.length === 4) {
-          // 例如: value = "#3ef4"
-          const dulp = n => n + n;
-          return {
-            r: parseInt(dulp(rgbStr.slice(0, 1)), 16),
-            g: parseInt(dulp(rgbStr.slice(1, 2)), 16),
-            b: parseInt(dulp(rgbStr.slice(2, 3)), 16),
-            a: parseInt(dulp(rgbStr.slice(3, 4)), 16) / 265
-          };
+    function parseFromHSL(value: colorValue) {}
+    function parseFromRGB(value: colorValue) {
+      return null;
+    }
+    function parseFromHEX(value: colorValue) {
+      if (typeof value === "string") {
+        let matchStr;
+        if (
+          (matchStr = value.match(
+            /^#([0-9a-fA-F]{3}|[0-9a-fA-F]{4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$/
+          ))
+        ) {
+          const rgbStr = matchStr[1];
+          if (rgbStr.length === 6) {
+            // 例如: value = "#000fff"
+            return {
+              r: parseInt(rgbStr.slice(0, 2), 16),
+              g: parseInt(rgbStr.slice(2, 4), 16),
+              b: parseInt(rgbStr.slice(4, 6), 16)
+            };
+          } else if (rgbStr.length === 3) {
+            // 例如: value = "#3ef"
+            const dulp = n => n + n;
+            return {
+              r: parseInt(dulp(rgbStr.slice(0, 1)), 16),
+              g: parseInt(dulp(rgbStr.slice(1, 2)), 16),
+              b: parseInt(dulp(rgbStr.slice(2, 3)), 16)
+            };
+          } else if (rgbStr.length === 8) {
+            // 例如: value = "#000fffcc"
+            return {
+              r: parseInt(rgbStr.slice(0, 2), 16),
+              g: parseInt(rgbStr.slice(2, 4), 16),
+              b: parseInt(rgbStr.slice(4, 6), 16),
+              a: parseInt(rgbStr.slice(6, 8), 16) / 265
+            };
+          } else if (rgbStr.length === 4) {
+            // 例如: value = "#3ef4"
+            const dulp = n => n + n;
+            return {
+              r: parseInt(dulp(rgbStr.slice(0, 1)), 16),
+              g: parseInt(dulp(rgbStr.slice(1, 2)), 16),
+              b: parseInt(dulp(rgbStr.slice(2, 3)), 16),
+              a: parseInt(dulp(rgbStr.slice(3, 4)), 16) / 265
+            };
+          }
         }
       }
+      return undefined;
     }
-    return undefined;
+    return parseFromHEX(value) || parseFromRGB(value) || parseFromHSL(value);
   }
-
-  toRGB() {
-    return `rgb${this.a < 1 ? 'a' : ''}(${this.r},${this.g},${this.b}${
-      this.a < 1 ? `,${this.a.toFixed(2)}` : ''
+  inferRGB() {}
+  outputRGB() {
+    if (!(this.r || this.g || this.b)) {
+      this.inferRGB();
+    }
+    return `rgb${this.a < 1 ? "a" : ""}(${this.r},${this.g},${this.b}${
+      this.a < 1 ? `,${this.a.toFixed(2)}` : ""
     })`;
   }
-
-  // 有明确目的的工具函数没必要自己写，找第三方js库就行了
-  toHSL(params: string) {
-    if (params.match(/#[0-9a-fA-F]{6}/)) {
-      
+  outputHSL() {
+    if (!(this.h || this.s || this.l)) {
+      this.inferHSL();
     }
+    return `hsl${this.a < 1 ? "a" : ""}(${this.h},${this.s},${this.l}${
+      this.a < 1 ? `,${this.a.toFixed(2)}` : ""
+    })`;
   }
-  toHEX() {
+  inferHSL() {
+    const [r, g, b] = [this.r, this.g, this.b];
+    const [max, min] = [Math.max(r, g, b), Math.min(r, g, b)];
+    const heaviestColor =
+      max === min ? "gray" : max === r ? "red" : max === g ? "green" : "blue";
+    switch (heaviestColor) {
+      // 这里阅读顺序不对，怎么破？
+      case "gray": {
+        this.h = 0;
+      }
+      case "red": {
+        this.h = ((60 * (g - b)) / (max - min) + 360) % 360;
+      }
+      case "green": {
+        this.h = (60 * (g - b)) / (max - min) + 120;
+      }
+      case "blue": {
+        this.h = (60 * (g - b)) / (max - min) + 240;
+      }
+    }
+    this.l = (max + min) / 2 / 255;
+    this.s =
+      (max - min) /
+      2 /
+      Math.min(Math.abs(this.l - 0), Math.abs(this.l - 1)) /
+      255;
+  }
+  outputHEX() {
     function toTwoHex(num = 0) {
       const hex = num.toString(16);
       if (hex.length === 1) {
-        return '0' + hex;
+        return "0" + hex;
       }
       return hex;
     }
     return `#${toTwoHex(this.r)}${toTwoHex(this.g)}${toTwoHex(this.b)}`;
   }
   [Symbol.toPrimitive]() {
-    return this.toRGB();
+    return this.outputRGB();
   }
 }
 
@@ -276,12 +315,12 @@ function colorHex(colorValue) {
   var reg = /^#([0-9a-fA-f]{3}|[0-9a-fA-f]{6})$/;
   // 如果是rgb颜色表示
   if (/^(rgb|RGB)/.test(colorValue)) {
-    var aColor = colorValue.replace(/(?:\(|\)|rgb|RGB)*/g, '').split(',');
-    var strHex = '#';
+    var aColor = colorValue.replace(/(?:\(|\)|rgb|RGB)*/g, "").split(",");
+    var strHex = "#";
     for (var i = 0; i < aColor.length; i++) {
       var hex = Number(aColor[i]).toString(16);
       if (hex.length < 2) {
-        hex = '0' + hex;
+        hex = "0" + hex;
       }
       strHex += hex;
     }
@@ -290,11 +329,11 @@ function colorHex(colorValue) {
     }
     return strHex;
   } else if (reg.test(colorValue)) {
-    var aNum = colorValue.replace(/#/, '').split('');
+    var aNum = colorValue.replace(/#/, "").split("");
     if (aNum.length === 6) {
       return colorValue;
     } else if (aNum.length === 3) {
-      var numHex = '#';
+      var numHex = "#";
       for (var i = 0; i < aNum.length; i += 1) {
         numHex += aNum[i] + aNum[i];
       }
@@ -303,7 +342,7 @@ function colorHex(colorValue) {
   }
   return colorValue;
 }
-colorHex('rgb(255,255,255)'); // "#ffffff"
+colorHex("rgb(255,255,255)"); // "#ffffff"
 
 var colorRgb = function(sColor) {
   sColor = sColor.toLowerCase();
@@ -312,7 +351,7 @@ var colorRgb = function(sColor) {
   // 如果是16进制颜色
   if (sColor && reg.test(sColor)) {
     if (sColor.length === 4) {
-      var sColorNew = '#';
+      var sColorNew = "#";
       for (var i = 1; i < 4; i += 1) {
         sColorNew += sColor.slice(i, i + 1).concat(sColor.slice(i, i + 1));
       }
@@ -321,13 +360,13 @@ var colorRgb = function(sColor) {
     //处理六位的颜色值
     var sColorChange = [];
     for (var i = 1; i < 7; i += 2) {
-      sColorChange.push(parseInt('0x' + sColor.slice(i, i + 2)));
+      sColorChange.push(parseInt("0x" + sColor.slice(i, i + 2)));
     }
-    return 'RGB(' + sColorChange.join(',') + ')';
+    return "RGB(" + sColorChange.join(",") + ")";
   }
   return sColor;
 };
-colorRgb('#fff'); //"RGB(255,255,255)"
+colorRgb("#fff"); //"RGB(255,255,255)"
 
 /**
  * HSL颜色值转换为RGB.
