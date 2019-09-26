@@ -163,112 +163,133 @@ function createRandomColor() {
     () => letters[Math.floor(Math.random() * 16)]
   )}`
 }
-function hasDefined(...values) {
-  return values.every(value => typeof value !== undefined)
+function empty(value) {
+  if (typeof value === 'undefined' || value === null) {
+    return true
+  } else if (
+    typeof value === 'object' &&
+    Array.isArray(value) &&
+    value.length === 0
+  ) {
+    // []
+    return true
+  } else if (typeof value === 'object' && Object.keys(value).length === 0) {
+    // {}
+    return true
+  }
+  return false
 }
-function hasnotDefined(...values) {
-  return values.every(value => typeof value === undefined)
+function allHasnotValue(...values) {
+  return values.every(empty)
 }
-function hasValue(...values) {
-  return values.every(
-    value => typeof value !== undefined && typeof value !== null
-  )
+function stringify(value) {
+  if (typeof value === 'string') {
+    return value
+  } else if (empty(value)) {
+    return ''
+  } else {
+    return JSON.stringify(value)
+  }
 }
-function hasnotValue(...values) {
-  return values.every(
-    value => typeof value === undefined || typeof value === null
-  )
-}
-//TODO: 完善默认值机制
 class Color {
   constructor(value = '') {
-    if (typeof value === 'string') {
-      let matchStr
-      if (
-        (matchStr = value.match(
+    value = stringify(value)
+    let matchStr
+    if (
+      (matchStr = value
+        .replace(/ /g, '')
+        .match(
           /^#([0-9a-fA-F]{3}|[0-9a-fA-F]{4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$/
         ))
-      ) {
-        const rgbStr = matchStr[1]
-        if (rgbStr.length === 6) {
-          // 例如: value = "#000fff"
-          this.r = parseInt(rgbStr.slice(0, 2), 16)
-          this.g = parseInt(rgbStr.slice(2, 4), 16)
-          this.b = parseInt(rgbStr.slice(4, 6), 16)
-        } else if (rgbStr.length === 8) {
-          // 例如: value = "#000fffcc"
-          this.r = parseInt(rgbStr.slice(0, 2), 16)
-          this.g = parseInt(rgbStr.slice(2, 4), 16)
-          this.b = parseInt(rgbStr.slice(4, 6), 16)
-          this.a = parseInt(rgbStr.slice(6, 8), 16) / 256
-        } else if (rgbStr.length === 3) {
-          // 例如: value = "#3ef"
-          const dulp = n => n + n
-          this.r = parseInt(dulp(rgbStr.slice(0, 1)), 16)
-          this.g = parseInt(dulp(rgbStr.slice(1, 2)), 16)
-          this.b = parseInt(dulp(rgbStr.slice(2, 3)), 16)
-        } else if (rgbStr.length === 4) {
-          // 例如: value = "#3ef4"
-          const dulp = n => n + n
-          this.r = parseInt(dulp(rgbStr.slice(0, 1)), 16)
-          this.g = parseInt(dulp(rgbStr.slice(1, 2)), 16)
-          this.b = parseInt(dulp(rgbStr.slice(2, 3)), 16)
-          this.a = parseInt(dulp(rgbStr.slice(3, 4)), 16) / 256
-        }
-      } else if (
-        (matchStr = value.match(
-          /^rgba?\((?<red>\d+), ?(?<green>\d+), ?(?<blue>\d+)(?:, ?(?<alpha>.+))?\)$/
-        ))
-      ) {
-        const { red: r, green: g, blue: b, alpha: a } = matchStr.groups
-        this.r = parseInt(r)
-        this.g = parseInt(g)
-        this.b = parseInt(b)
-        this.a = parseFloat(a)
-      } else if (
-        (matchStr = value.match(
-          /^hsla?\((?<hue>\d+), ?(?<saturation>\d+), ?(?<lightness>\d+)(?:, ?(?<alpha>.+))?\)$/
-        ))
-      ) {
-        const {
-          hue: h,
-          saturation: s,
-          lightness: l,
-          alpha: a
-        } = matchStr.groups
-        this.h = parseInt(h)
-        this.s = parseFloat(s)
-        this.l = parseFloat(l)
-        this.a = parseFloat(a)
-      } else {
-        try {
-          const [h, s, l, a] = namedColor_hsl[value]
-          this.h = h
-          this.s = s
-          this.l = l
-          this.a = a
-        } catch {
-          throw Error(`can't understand named color: ${value}`)
-        }
+    ) {
+      const rgbStr = matchStr[1]
+      if (rgbStr.length === 6) {
+        // 例如: value = "#000fff"
+        this.r = parseInt(rgbStr.slice(0, 2), 16)
+        this.g = parseInt(rgbStr.slice(2, 4), 16)
+        this.b = parseInt(rgbStr.slice(4, 6), 16)
+      } else if (rgbStr.length === 8) {
+        // 例如: value = "#000fffcc"
+        this.r = parseInt(rgbStr.slice(0, 2), 16)
+        this.g = parseInt(rgbStr.slice(2, 4), 16)
+        this.b = parseInt(rgbStr.slice(4, 6), 16)
+        this.a = parseInt(rgbStr.slice(6, 8), 16) / 256
+      } else if (rgbStr.length === 3) {
+        // 例如: value = "#3ef"
+        const dulp = n => n + n
+        this.r = parseInt(dulp(rgbStr.slice(0, 1)), 16)
+        this.g = parseInt(dulp(rgbStr.slice(1, 2)), 16)
+        this.b = parseInt(dulp(rgbStr.slice(2, 3)), 16)
+      } else if (rgbStr.length === 4) {
+        // 例如: value = "#3ef4"
+        const dulp = n => n + n
+        this.r = parseInt(dulp(rgbStr.slice(0, 1)), 16)
+        this.g = parseInt(dulp(rgbStr.slice(1, 2)), 16)
+        this.b = parseInt(dulp(rgbStr.slice(2, 3)), 16)
+        this.a = parseInt(dulp(rgbStr.slice(3, 4)), 16) / 256
       }
-    } else if (typeof value === 'number') {
-      this.l = value
-    } else if (typeof value === 'object' && value instanceof Array) {
-      const [h = 0, s = 0, l = 75, a = 1] = value
-      this.h = h
-      this.s = s
-      this.l = l
-      this.a = a
+    } else if (
+      (matchStr = value
+        .replace(/ /g, '')
+        .match(
+          /^rgba?\((?<red>\d+),(?<green>\d+),(?<blue>\d+),?(?<alpha>.+)?\)$/
+        ))
+    ) {
+      const { red: r, green: g, blue: b, alpha: a } = matchStr.groups
+      this.r = parseInt(r)
+      this.g = parseInt(g)
+      this.b = parseInt(b)
+      this.a = parseFloat(a)
+    } else if (
+      (matchStr = value
+        .replace(/ /g, '')
+        .match(
+          /^hsla?\((?<hue>\d+),(?<saturation>\d+),(?<lightness>\d+),?(?<alpha>.+)?\)$/
+        ))
+    ) {
+      const { hue: h, saturation: s, lightness: l, alpha: a } = matchStr.groups
+      this.h = parseInt(h)
+      this.s = parseFloat(s)
+      this.l = parseFloat(l)
+      this.a = parseFloat(a)
+    } else if (
+      (matchStr = value.replace(/ /g, '').match(/^(?<lightness>\d+)$/))
+    ) {
+      this.l = parseInt(matchStr.groups.lightness)
+    } else if (
+      (matchStr = value
+        .replace(/ /g, '')
+        .match(
+          /^\[(?<hue>\d+),(?<saturation>\d+),(?<lightness>\d+),?(?<alpha>.+)?\]$/
+        ))
+    ) {
+      const { hue: h, saturation: s, lightness: l, alpha: a } = matchStr.groups
+      this.h = parseInt(h)
+      this.s = parseFloat(s)
+      this.l = parseFloat(l)
+      this.a = parseFloat(a)
     } else {
-      throw Error(`can't understand this type of value: ${value}`)
+      try {
+        const [h, s, l, a] = namedColor_hsl[value]
+        this.h = h
+        this.s = s / 100
+        this.l = l / 100
+        this.a = a
+      } catch {
+        throw Error(`can't understand color: ${value}`)
+      }
     }
   }
-  inferRGB([h = 0, s = 0, l = 75, a = 1]) {
+  _inferRGB([h = 0, s = 0, l = 0]) {
     // HSL转RGB算法
     return [255, 255, 255]
   }
-  inferHSL([r = 200, g = 200, b = 200, a = 1]) {
+  _inferHSL([r = 0, g = 0, b = 0]) {
+    r /= 255
+    g /= 255
+    b /= 255
     const [max, min] = [Math.max(r, g, b), Math.min(r, g, b)]
+    const d = max - min
     const heaviestColor =
       max === min ? 'gray' : max === r ? 'red' : max === g ? 'green' : 'blue'
     let h, s, l
@@ -279,51 +300,45 @@ class Color {
         break
       }
       case 'red': {
-        h = ((60 * (g - b)) / (max - min) + 360) % 360
+        h = ((60 * (g - b)) / d + 360) % 360
         break
       }
       case 'green': {
-        h = (60 * (g - b)) / (max - min) + 120
+        h = (60 * (g - b)) / d + 120
         break
       }
       case 'blue': {
-        h = (60 * (g - b)) / (max - min) + 240
+        h = (60 * (g - b)) / d + 240
         break
       }
     }
-    l = ((max + min) / 2 / 256) * 100
-    s = (max - min) / 2 / Math.min(Math.abs(l - 0), Math.abs(l - 1)) //TODO: 这里公式的结果明显不对
-    return [h, s, l, a]
+    l = (max + min) / 2
+    // s = (max - min) / 2 - Math.min(Math.abs(l - 0), Math.abs(l - 1)) //TODO: 这里公式的结果明显不对
+    s = l > 0.5 ? d / (2 - max - min) : d / (max + min)
+    return [h, s, l]
   }
   toRGB() {
-    if (hasnotDefined(this.r, this.g, this.b)) {
-      try {
-        const [r, g, b, a = 1] = this.inferRGB([this.h, this.s, this.l, this.a])
-        this.r = r
-        this.g = g
-        this.b = b
-        this.a = a
-      } catch {
-        throw Error('something wrong in this.toRGB()') //TOFIX: 这里的捕获似乎是没有必要的
-      }
+    if (allHasnotValue(this.r, this.g, this.b)) {
+      const [r, g, b, a] = this._inferRGB([this.h, this.s, this.l, this.a])
+      this.r = r
+      this.g = g
+      this.b = b
+      this.a = a
     }
     return `rgb${this.a < 1 ? 'a' : ''}(${this.r},${this.g},${this.b}${
       this.a < 1 ? `,${this.a.toFixed(2)}` : ''
     })`
   }
   toHSL() {
-    if (hasnotDefined(this.h, this.s, this.l)) {
-      try {
-        const [h, s, l, a = 1] = this.inferHSL([this.r, this.g, this.b, this.a])
-        this.h = h
-        this.s = s
-        this.l = l
-        this.a = a
-      } catch {
-        throw Error('something wrong in this.toHSL()') //TOFIX: 这里的捕获似乎是没有必要的
-      }
+    if (empty(this.l)) {
+      const [h, s, l] = this._inferHSL([this.r, this.g, this.b])
+      this.h = h
+      this.s = s
+      this.l = l
     }
-    return `hsl${this.a < 1 ? 'a' : ''}(${this.h},${this.s},${this.l}${
+    return `hsl${this.a < 1 ? 'a' : ''}(${Math.round(this.h) || 0},${Math.round(
+      this.s * 100
+    ) || 0}%,${Math.round(this.l * 100)}%${
       this.a < 1 ? `,${this.a.toFixed(2)}` : ''
     })`
   }
@@ -335,9 +350,9 @@ class Color {
       }
       return hex
     }
-    if (hasnotDefined(this.r, this.g, this.b)) {
+    if (allHasnotValue(this.r, this.g, this.b)) {
       try {
-        const [r, g, b, a = 1] = this.inferRGB([this.h, this.s, this.l, this.a])
+        const [r, g, b, a] = this._inferRGB([this.h, this.s, this.l, this.a])
         this.r = r
         this.g = g
         this.b = b
@@ -480,5 +495,7 @@ function rgbToHsl(r, g, b) {
   return [h, s, l]
 }
 //#endregion
-const color = new Color('transparent')
+const colorString = 'rgb(245,222,179)'
+const color = new Color(colorString)
+console.log(JSON.stringify([33, 44, 11]))
 console.log(color.toHSL())
