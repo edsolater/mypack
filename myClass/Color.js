@@ -1,4 +1,6 @@
-const namedColor_rgb = {
+const namedColor_hsl = {
+  // 特殊颜色
+  transparent: [0, 0, 0, 0],
   // 灰色系
   white: [0, 0, 100],
   snow: [0, 100, 99],
@@ -161,6 +163,23 @@ function createRandomColor() {
     () => letters[Math.floor(Math.random() * 16)]
   )}`
 }
+function hasDefined(...values) {
+  return values.every(value => typeof value !== undefined)
+}
+function hasnotDefined(...values) {
+  return values.every(value => typeof value === undefined)
+}
+function hasValue(...values) {
+  return values.every(
+    value => typeof value !== undefined && typeof value !== null
+  )
+}
+function hasnotValue(...values) {
+  return values.every(
+    value => typeof value === undefined || typeof value === null
+  )
+}
+//TODO: 完善默认值机制
 class Color {
   constructor(value = '') {
     if (typeof value === 'string') {
@@ -222,18 +241,33 @@ class Color {
         this.l = parseFloat(l)
         this.a = parseFloat(a)
       } else {
-        const [r, g, b] = namedColor_rgb[value] || []
-        this.r = r
-        this.g = g
-        this.b = b
+        try {
+          const [h, s, l, a] = namedColor_hsl[value]
+          this.h = h
+          this.s = s
+          this.l = l
+          this.a = a
+        } catch {
+          throw Error(`can't understand named color: ${value}`)
+        }
       }
+    } else if (typeof value === 'number') {
+      this.l = value
+    } else if (typeof value === 'object' && value instanceof Array) {
+      const [h = 0, s = 0, l = 75, a = 1] = value
+      this.h = h
+      this.s = s
+      this.l = l
+      this.a = a
+    } else {
+      throw Error(`can't understand this type of value: ${value}`)
     }
   }
-  inferRGB([h, s, l, a = 1]) {
+  inferRGB([h = 0, s = 0, l = 75, a = 1]) {
     // HSL转RGB算法
     return [255, 255, 255]
   }
-  inferHSL([r, g, b, a = 1]) {
+  inferHSL([r = 200, g = 200, b = 200, a = 1]) {
     const [max, min] = [Math.max(r, g, b), Math.min(r, g, b)]
     const heaviestColor =
       max === min ? 'gray' : max === r ? 'red' : max === g ? 'green' : 'blue'
@@ -258,25 +292,19 @@ class Color {
       }
     }
     l = ((max + min) / 2 / 256) * 100
-    s = (max - min) / 2 / Math.min(Math.abs(l - 0), Math.abs(l - 1)) //TODO: 这里公式明显不对
-    console.log('s: ', s)
+    s = (max - min) / 2 / Math.min(Math.abs(l - 0), Math.abs(l - 1)) //TODO: 这里公式的结果明显不对
     return [h, s, l, a]
   }
   toRGB() {
-    if (!(this.r || this.g || this.b)) {
-      if (this.h && this.s && this.l) {
-        const [r, g, b, a = 1] = this.inferRGB([
-          this.h,
-          this.s,
-          this.l,
-          this.a || 1
-        ])
+    if (hasnotDefined(this.r, this.g, this.b)) {
+      try {
+        const [r, g, b, a = 1] = this.inferRGB([this.h, this.s, this.l, this.a])
         this.r = r
         this.g = g
         this.b = b
         this.a = a
-      } else {
-        throw Error('something wrong')
+      } catch {
+        throw Error('something wrong in this.toRGB()') //TOFIX: 这里的捕获似乎是没有必要的
       }
     }
     return `rgb${this.a < 1 ? 'a' : ''}(${this.r},${this.g},${this.b}${
@@ -284,20 +312,15 @@ class Color {
     })`
   }
   toHSL() {
-    if (!(this.h || this.s || this.l)) {
-      if (this.r && this.g && this.b) {
-        const [h, s, l, a = 1] = this.inferHSL([
-          this.r,
-          this.g,
-          this.b,
-          this.a || 1
-        ])
+    if (hasnotDefined(this.h, this.s, this.l)) {
+      try {
+        const [h, s, l, a = 1] = this.inferHSL([this.r, this.g, this.b, this.a])
         this.h = h
         this.s = s
         this.l = l
         this.a = a
-      } else {
-        throw Error('something wrong')
+      } catch {
+        throw Error('something wrong in this.toHSL()') //TOFIX: 这里的捕获似乎是没有必要的
       }
     }
     return `hsl${this.a < 1 ? 'a' : ''}(${this.h},${this.s},${this.l}${
@@ -312,10 +335,21 @@ class Color {
       }
       return hex
     }
+    if (hasnotDefined(this.r, this.g, this.b)) {
+      try {
+        const [r, g, b, a = 1] = this.inferRGB([this.h, this.s, this.l, this.a])
+        this.r = r
+        this.g = g
+        this.b = b
+        this.a = a
+      } catch {
+        throw Error('something wrong in this.toHEX()') //TOFIX: 这里的捕获似乎是没有必要的
+      }
+    }
     return `#${toTwoHex(this.r)}${toTwoHex(this.g)}${toTwoHex(this.b)}`
   }
   [Symbol.toPrimitive]() {
-    return this.toRGB()
+    return this.toHSL()
   }
 }
 //#region 别人写颜色转换函数们
@@ -446,5 +480,5 @@ function rgbToHsl(r, g, b) {
   return [h, s, l]
 }
 //#endregion
-const color = new Color('dodgerblue')
+const color = new Color('transparent')
 console.log(color.toHSL())
