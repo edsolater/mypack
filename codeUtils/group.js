@@ -10,13 +10,32 @@
  *   animal: ['animal_horse', 'animal_bird', 'animal_monkey'],
  *   fruit: ['fruit_banana']
  * }
+ * @example
+ * group(
+ *   ['animal_horse', 'animal_bird', 'animal_monkey', 'fruit_banana', 'gas'],
+ *   {
+ *     animal: item => item.match(/^animal_/),
+ *     fruit: /^fruit_/
+ *   },
+ *   {
+ *     noUnary: true,
+ *     itemFilter: { animal: newItem => newItem.replace('animal_', '') }
+ *   }
+ * ) => {
+ *   animal: ['horse', 'bird', 'monkey'],
+ *   fruit: 'fruit_banana'
+ * }
  */
-export function group(
+function group(
   dataCollection,
   template = { groupName: item => item.id.match(/^hello/) },
-  config = { /*不能出现单元素的数组*/ noUnary: false }
+  config = {
+    /*不能出现单元素的数组*/ noUnary: false,
+    /*对每一项数据使用的回调*/ itemFilter: undefined
+  }
 ) {
-  // 根据配置设定核心处理机制
+  //#region 根据配置设定核心处理机制
+  // noUnary
   function alwaysArray(obj, property, item) {
     if (Array.isArray(obj[property])) {
       obj[property].push(item)
@@ -35,7 +54,20 @@ export function group(
   }
   const coreHandler = config.noUnary ? noUnary : alwaysArray
 
-  // 处理数据
+  // itemFilter
+  function createItemFilter(itemFilter) {
+    if (typeof itemFilter === 'function') {
+      return (groupName, item) => [groupName, itemFilter(item)]
+    } else if (typeof itemFilter === 'object') {
+      return (groupName, item) =>
+        createItemFilter(itemFilter[groupName])(groupName, item)
+    } else {
+      return (groupName, item) => [groupName, item]
+    }
+  }
+  //#endregion
+
+  //#region 算法逻辑
   const outputCollection = {}
   dataCollection.forEach(item => {
     for (const [groupName, pattern] of Object.entries(template)) {
@@ -43,12 +75,16 @@ export function group(
         (typeof pattern === 'function' && pattern(item)) ||
         (pattern instanceof RegExp && item.match(pattern))
       ) {
-        coreHandler(outputCollection, groupName, item)
+        coreHandler(
+          outputCollection,
+          ...createItemFilter(config.itemFilter)(groupName, item)
+        )
         break
       }
     }
   })
   return outputCollection
+  //#endregion
 }
 console.log(
   group(
@@ -57,6 +93,10 @@ console.log(
       animal: item => item.match(/^animal_/),
       fruit: /^fruit_/
     },
+    {
+      noUnary: true,
+      itemFilter: { animal: newItem => newItem.replace('animal_', '') }
+    }
   )
 )
 const foo = /^friut/
