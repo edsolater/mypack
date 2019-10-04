@@ -40,10 +40,10 @@ function any(...expressionsWidthJudgeFuncs) {
  *     () => (doSomething(), false)
  *   )
  */
-function trusy(...expressions) {
+function allTrue(...expressions) {
   return all(...expressions, v => Boolean(v))
 }
-function falsy(...expressions) {
+function allFalse(...expressions) {
   return all(...expressions, v => !Boolean(v))
 }
 function foo() {
@@ -52,7 +52,7 @@ function foo() {
 }
 
 console.log(
-  trusy(
+  allTrue(
     () => true,
     () => foo(),
     () => 1 > 0,

@@ -1,4 +1,4 @@
-import { baseFunc } from './lowerBaseFunctions'
+import { baseFunc } from './elementry'
 
 /**
  * 生成函数
@@ -13,17 +13,17 @@ import { baseFunc } from './lowerBaseFunctions'
  *      yield ['♦',p]
  *    }]
  */
-export function* generate<T>(count: number, mapFunc = baseFunc) {
+export function* generate(count, mapFunc = baseFunc) {
   //TODO: 写个MapFunc的类型要能自动返回没给定的参数的返回值
   for (let i = 0; i < count; i++) {
     if (mapFunc.constructor.name === 'GenertorFunction') {
-      yield* (mapFunc as GeneratorFunction)(i, count)
+      yield* mapFunc(i, count)
     } else {
       yield mapFunc(i, count)
     }
   }
 }
 
-export function range(count: number, mapFunc = baseFunc) {
+export function range(count, mapFunc = baseFunc) {
   return [...generate(count, mapFunc)]
 }

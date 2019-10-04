@@ -1,0 +1,38 @@
+button {
+  box-sizing: border-box;
+}
+.absolute-box {
+  position: absolute;
+}
+/* 组件化写法示例 */
+#main .center {
+  width: 30px;
+}
+#main .center .nav--Toc {
+  text-align: center;
+}
+#main .center .nav--Toc .text {
+  margin-left: 34px;
+}
+#main .center .nav--Toc .text .inner {
+  height: 43px;
+}
+#main .center .nav--Toc .text .inner .microInner {
+  background: white;
+}
+#main .center .nav--Toc .hello {
+  box-sizing: border-box;
+}
+#main .center .nav--Toc .NavItem .text {
+  text-align: center;
+}
+#main .center .nav--Toc {
+  height: 65px;
+  color: dodgerblue;
+}
+#main .center .nav--Toc .NavItem {
+  text-align: right;
+}
+#main .center > .center {
+  height: 40px;
+}

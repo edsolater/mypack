@@ -1,17 +1,12 @@
 /**
  * -------------------------------------------------------------------
- * 
- * 说是tag，其实都是 (value) => boolean 形式的简单函数
- * 
+ *
+ * 说是tag，其实都是 (value) => boolean 形式的简单函数，用于需要返回布尔值的回调
+ *
  * -------------------------------------------------------------------
  */
 
-
-
 // array 系列
-function isArray(value) {
-  return Array.isArray(value)
-}
 function isEmptyArray(value) {
   return Array.isArray(value) && value.length === 0
 }
@@ -24,19 +19,26 @@ function isMultiItemArray(value) {
 
 // 是否已定义，且有值
 function isEmpty(value) {
-  if (typeof value === 'undefined') return false
-  if (typeof value === 'object' && Array.isArray(value) && value.length === 0) {
-    // []
-    return true
-  } else if (typeof value === 'object' && Object.keys(value).length === 0) {
-    // {}
+  if (typeof value === 'object' && Object.keys(value).length === 0) {
+    // {} 或 []
     return true
   }
-  return false
+  if (value === 0) {
+    return false
+  }
+  return Boolean(value)
 }
 function isnotEmpty(value) {
   if (typeof value === 'undefined') return false
   return !isEmpty(value)
+}
+
+// 不是undefined或null
+function isNill(value) {
+  return typeof value === 'undefined' || value === null
+}
+function isnotNill(value) {
+  return !isNill(value)
 }
 
 // 是否未定义，

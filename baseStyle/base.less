@@ -1,0 +1,77 @@
+.underline-indicator(@height: 3px) {
+  // 需使box对象能成为一个containing box
+  position: relative;
+
+  &::after {
+    content: '';
+    position: absolute;
+    background: currentColor;
+    height: @height;
+    width: 100%;
+    bottom: 0;
+  }
+}
+
+// 多用于 <input> 使其不影响布局、不在屏幕上显示，但JS/CSS能使用此input的丰富状态
+.ghost-node() {
+  positon: absolute;
+  opacity: 0;
+}
+
+button {
+  box-sizing: border-box;
+}
+
+.absolute-box {
+  position: absolute;
+}
+
+/* 组件化写法示例 */
+// 业务组件的写法 （预装组件的预装样式直接webpage样式注入就行）
+.NavItem() {
+  .NavItem {
+    .text {
+      text-align: center;
+    }
+  }
+}
+.nav--Toc(@_Item:{}) {
+  .nav--Toc {
+    // 用 “>” 标识组件
+    // 专门定义这个组件的盒子 // 组件mixin唯一的子选择器
+    // all       : inherit; // all: inherit 阻隔上层代码的影响
+    text-align: center;
+    .text {
+      margin-left: 34px;
+      .inner {
+        height: 43px;
+        .microInner {
+          background: white;
+        }
+      }
+    }
+    .hello {
+      box-sizing: border-box;
+    }
+    @_Item();
+  }
+}
+
+//业务逻辑的写法
+#main {
+  // 这是页面标识，就是个 namespace
+  .center {
+    width: 30px;
+    .nav--Toc(.NavItem()); // 组件名class一概大写加双下划线的形式
+    .nav--Toc {
+      height: 65px;
+      color: dodgerblue;
+      .NavItem {
+        text-align: right;
+      }
+    }
+    > .center {
+      height: 40px;
+    }
+  }
+}
