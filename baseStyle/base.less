@@ -61,7 +61,7 @@ button {
   // 这是页面标识，就是个 namespace
   .center {
     width: 30px;
-    .Toc(.NavItem()); // 组件名class一概大写加双下划线的形式
+    .Toc(@Item:{.NavItem()}); // 组件名class一概 PascalCase
     .Toc {
       height: 65px;
       color: dodgerblue;

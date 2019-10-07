@@ -1,7 +1,7 @@
 import pipe from './pipe'
 /**
  * @example
- * all(1 < 0, typeof 3 === 'number', true, (v)=>Boolean(v) ) => true
+ * all(1 < 0, typeof 3 === 'number', true, Boolean ) => true
  */
 function all(...expressionsWidthJudgeFuncs) {
   const judgeFunc = pipe(expressionsWidthJudgeFuncs.pop())
@@ -16,7 +16,7 @@ function all(...expressionsWidthJudgeFuncs) {
 }
 /**
  * @example
- * any(1 < 0, typeof 3 === 'string',(v)=>Boolean(v)) => true
+ * any(1 < 0, typeof 3 === 'string', Boolean) => true
  */
 function any(...expressionsWidthJudgeFuncs) {
   const judgeFunc = pipe(expressionsWidthJudgeFuncs.pop())

@@ -17,7 +17,7 @@
 4. `popup`（给予用户反馈，只有当满足交互条件时才会出现的组件）
 5. `----`（无阵营组件）（流窜于各种大组件的寄生性小组件，无法也不能独立存活）（举例：IconItem）
 6. `widget`（独立于阵营，混沌属性）(示例： `<div className="Navbar--widget">`)
-7. `layout` (格式与因业务需求临时取的 className 相同，其实就只是个排版的语义型 DIV)（非叶组件，更多地是一些 class 命名习惯）
+7.~~`layout` (格式与因业务需求临时取的 className 相同，其实就只是个排版的语义型 DIV)（非叶组件，更多地是一些 class 命名习惯）~~
 
 ## 组件收集
 
@@ -31,14 +31,13 @@
 ### 暂记（写完了要删除）
 
 - 像 tabbar、menu 等的指示形线条属于组件的样式属性，用 css 控制（需要给个专门的 class）
-- layout 组件不一定是“空壳”，可能是有位置信息的
-- layout 组件可能是一个“空壳”，即完全没有内容，只有一个壳。子组件位既是 `props.children`
 - TODO： 一项提案：layout 布局组件都有`antd <Container>`一般的规定嵌套的行为
 - TOFIX: 内容足够多时，想想 Markdown 格式排版问题
 - ~~组件后置下划线的语义、区分作用，都比前置下划线明确~~
 - ~~干脆不要下滑线了，只由大写与否区分组件 class.component 级组件均要有 date-component=true~~
 - 组件的 calss 只由大小写加以区分，且组件的根 DIV 均要有 data-component=true
 - 子组件位的 class 与样式 class 相同（css 中为 camelCase）。（除第一层组件外，能容纳组件的一定是子组件位）
+- 属性组件Group的特点：Group上监听click事件，内部元素上没有监听事件。
 
 ### Menu
 
@@ -61,8 +60,8 @@
 
 - 组件阵营：`nav`
 - 子组件位
-  - Item
-  - Container: 承载各个 tab 的内容物，此子组件位在视觉层次上为必选项
+  - Tablist
+  - TabPanel: 承载各个 tab 的内容物，此子组件位在视觉层次上为必选项
 - 样式 class：activeIndicator
   ![位于google搜索结果页](google-tabbar.png)
 
