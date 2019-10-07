@@ -27,7 +27,7 @@ button {
 }
 
 /* 组件化写法示例 */
-// 业务组件的写法 （预装组件的预装样式直接webpage样式注入就行）
+// 业务组件的写法 （预装组件并不需要mixin，预装组件的样式直接webpage样式注入就行）
 .NavItem() {
   .NavItem {
     .text {
@@ -35,8 +35,8 @@ button {
     }
   }
 }
-.nav--Toc(@_Item:{}) {
-  .nav--Toc {
+.Toc(@Item:{}) {
+  .Toc {
     // 用 “>” 标识组件
     // 专门定义这个组件的盒子 // 组件mixin唯一的子选择器
     // all       : inherit; // all: inherit 阻隔上层代码的影响
@@ -53,17 +53,16 @@ button {
     .hello {
       box-sizing: border-box;
     }
-    @_Item();
+    @Item();
   }
 }
-
 //业务逻辑的写法
 #main {
   // 这是页面标识，就是个 namespace
   .center {
     width: 30px;
-    .nav--Toc(.NavItem()); // 组件名class一概大写加双下划线的形式
-    .nav--Toc {
+    .Toc(.NavItem()); // 组件名class一概大写加双下划线的形式
+    .Toc {
       height: 65px;
       color: dodgerblue;
       .NavItem {
